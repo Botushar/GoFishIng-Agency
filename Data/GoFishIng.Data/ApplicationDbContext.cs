@@ -26,6 +26,16 @@
 
         public DbSet<Setting> Settings { get; set; }
 
+        public DbSet<Cart> Carts { get; set; }
+
+        public DbSet<Product> Products { get; set; }
+
+        public DbSet<Permit> Permits { get; set; }
+
+        public DbSet<Order> Orders { get; set; }
+
+        public DbSet<Trip> Trips { get; set; }
+
         public override int SaveChanges() => this.SaveChanges(true);
 
         public override int SaveChanges(bool acceptAllChangesOnSuccess)
@@ -96,6 +106,46 @@
                 .HasForeignKey(e => e.UserId)
                 .IsRequired()
                 .OnDelete(DeleteBehavior.Restrict);
+
+            builder.Entity<ApplicationUser>().HasOne(u => u.Cart)
+                .WithOne(c => c.User).HasForeignKey<Cart>(ca => ca.UserId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            builder.Entity<Cart>().HasOne(c => c.User)
+                .WithOne(u => u.Cart).HasForeignKey<ApplicationUser>(u => u.CartId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            builder.Entity<Permit>().HasOne(p => p.Cart)
+                .WithOne(c => c.Permit).HasForeignKey<Cart>(ca => ca.PermitId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            builder.Entity<Cart>().HasOne(c => c.Permit)
+                .WithOne(p => p.Cart).HasForeignKey<Permit>(p => p.CartId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            builder.Entity<ApplicationUser>().HasOne(u => u.Order)
+                .WithOne(o => o.User).HasForeignKey<Order>(or => or.UserId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            builder.Entity<Order>().HasOne(o => o.User)
+                .WithOne(u => u.Order).HasForeignKey<ApplicationUser>(us => us.OrderId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            builder.Entity<ApplicationUser>().HasOne(u => u.Permit)
+                .WithOne(p => p.User).HasForeignKey<Permit>(pe => pe.UserId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            builder.Entity<Permit>().HasOne(p => p.User)
+                .WithOne(u => u.Permit).HasForeignKey<ApplicationUser>(us => us.PermitId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            builder.Entity<Permit>().HasOne(p => p.Order)
+                .WithOne(o => o.Permit).HasForeignKey<Order>(or => or.PermitId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            builder.Entity<Order>().HasOne(o => o.Permit)
+                .WithOne(p => p.Order).HasForeignKey<Permit>(pe => pe.OrderId)
+                .OnDelete(DeleteBehavior.Cascade);
         }
 
         private static void SetIsDeletedQueryFilter<T>(ModelBuilder builder)
