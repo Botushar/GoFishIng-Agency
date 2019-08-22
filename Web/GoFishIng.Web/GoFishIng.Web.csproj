@@ -40,7 +40,11 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Areas\Agency\" />
-    <Folder Include="Areas\Store\" />
+    <Folder Include="Areas\Agency\Views\" />
+    <Folder Include="Areas\Agency\ViewModels\" />
+    <Folder Include="Areas\Store\Views\" />
+    <Folder Include="Areas\Store\ViewModels\" />
+    <Folder Include="Areas\User\Views\" />
+    <Folder Include="Areas\User\ViewModels\" />
   </ItemGroup>
 </Project>
