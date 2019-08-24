@@ -14,6 +14,10 @@
   <PropertyGroup>
     <CodeAnalysisRuleSet>..\..\Rules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
+
+  <ItemGroup>
+    <Content Remove="wwwroot\madeira-sport-fishing.jpg" />
+  </ItemGroup>
   <ItemGroup>
     <AdditionalFiles Include="..\..\stylecop.json" />
   </ItemGroup>
@@ -40,11 +44,14 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Areas\Agency\Views\" />
     <Folder Include="Areas\Agency\ViewModels\" />
     <Folder Include="Areas\Store\Views\" />
     <Folder Include="Areas\Store\ViewModels\" />
     <Folder Include="Areas\User\Views\" />
     <Folder Include="Areas\User\ViewModels\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="wwwroot\images\madeira-sport-fishing.jpg" />
   </ItemGroup>
 </Project>
