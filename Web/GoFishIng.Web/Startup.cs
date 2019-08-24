@@ -8,6 +8,7 @@
     using GoFishIng.Data.Models;
     using GoFishIng.Data.Repositories;
     using GoFishIng.Data.Seeding;
+    using GoFishIng.Services;
     using GoFishIng.Services.Data;
     using GoFishIng.Services.Mapping;
     using GoFishIng.Services.Messaging;
@@ -68,6 +69,7 @@
                     options.Conventions.AuthorizeAreaPage("Identity", "/Account/Logout");
                 });
 
+
             services
                 .ConfigureApplicationCookie(options =>
                 {
@@ -100,6 +102,11 @@
             services.AddTransient<IEmailSender, NullMessageSender>();
             services.AddTransient<ISmsSender, NullMessageSender>();
             services.AddTransient<ISettingsService, SettingsService>();
+            services.AddTransient<ITripsService, TripsService>();
+            services.AddTransient<IProductsService, ProductsService>();
+            services.AddTransient<IPermitsService, PermitsService>();
+            services.AddTransient<ICartsService, CartsService>();
+            services.AddTransient<IOrdersService, OrdersService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

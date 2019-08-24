@@ -44,7 +44,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Areas\Agency\ViewModels\" />
     <Folder Include="Areas\Store\Views\" />
     <Folder Include="Areas\Store\ViewModels\" />
     <Folder Include="Areas\User\Views\" />
