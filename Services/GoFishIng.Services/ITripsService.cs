@@ -6,5 +6,6 @@ namespace GoFishIng.Services
 {
     public interface ITripsService
     {
+        string CreateTrip(string name,string type, int groupSize, string startDate, string endDate);
     }
 }
