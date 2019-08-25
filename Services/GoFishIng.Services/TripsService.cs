@@ -17,10 +17,33 @@ namespace GoFishIng.Services
             this.db = db;
         }
 
-        public string CreateTrip(string name,string type, int groupSize, string startDate, string endDate)
+        public string CreateTrip(string name, string type,int groupSize, string startDate, string endDate)
         {
             var date1 = DateTime.Parse(startDate);
             var date2 = DateTime.Parse(endDate);
+            decimal thePrice = 0;
+
+            if (type == "BigGame")
+            {
+                thePrice = GlobalConstants.PriceMadeira * groupSize;
+                name = GlobalConstants.Madeira;
+                type = TripType.BigGame.ToString();
+            }
+
+            else if (type == "FreshWater")
+            {
+                thePrice = GlobalConstants.PriceBosnia * groupSize;
+                name = GlobalConstants.Bosnia;
+                type = TripType.FreshWater.ToString();
+            }
+
+            else
+            {
+                thePrice = GlobalConstants.PriceGreece * groupSize;
+                name = GlobalConstants.Greece;
+                type = TripType.SaltWater.ToString();
+
+            }
 
             var trip = new Trip
             {
@@ -29,7 +52,7 @@ namespace GoFishIng.Services
                 GroupSize = groupSize,
                 StartDate = date1,
                 EndDate = date2,
-                Price = GlobalConstants.PriceMadeira * groupSize,
+                Price = thePrice,
             };
 
             return trip.Id;
