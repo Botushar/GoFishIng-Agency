@@ -9,11 +9,11 @@ namespace GoFishIng.Data.Models
     {
         public Trip()
         {
-            this.Id = Guid.NewGuid().ToString();
-            this.Participants = new HashSet<ApplicationUser>();
+            this.TripId = Guid.NewGuid().ToString();
+            this.TripUsers = new HashSet<TripUser>();
         }
 
-        public string Id { get; set; }
+        public string TripId { get; set; }
 
         public string Name { get; set; }
 
@@ -35,6 +35,6 @@ namespace GoFishIng.Data.Models
 
         public Order Order { get; set; }
 
-        public ICollection<ApplicationUser> Participants { get; set; }
+        public ICollection<TripUser> TripUsers { get; set; }
     }
 }

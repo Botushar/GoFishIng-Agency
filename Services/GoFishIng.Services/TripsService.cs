@@ -6,18 +6,28 @@ using System.Linq;
 using System.Text;
 using GoFishIng.Common;
 using GoFishIng.Data.Models.Enums;
+using Microsoft.AspNetCore.Identity;
+using System.Threading;
+
 
 namespace GoFishIng.Services
 {
     public class TripsService : ITripsService
     {
         private readonly ApplicationDbContext db;
-        public TripsService(ApplicationDbContext db)
+        private readonly ICartsService cartsServices;
+        private readonly IApplicationUsersService applicationUsersServices;
+        
+
+        public TripsService(ApplicationDbContext db, ICartsService cartsServices, IApplicationUsersService applicationUsersServices)
         {
             this.db = db;
+            this.cartsServices = cartsServices;
+            this.applicationUsersServices = applicationUsersServices;
+           
         }
 
-        public string CreateTrip(string name, string type,int groupSize, string startDate, string endDate)
+        public string CreateTrip(string cartId,string name, string type,int groupSize, string startDate, string endDate)
         {
             var date1 = DateTime.Parse(startDate);
             var date2 = DateTime.Parse(endDate);
@@ -45,18 +55,37 @@ namespace GoFishIng.Services
 
             }
 
+            
+            //var currentUserId = this.applicationUsersServices.GetT;
+            //var currentCartId = this.db.Carts.FirstOrDefault(c => c.UserId == currentUserId).Id;         
+
             var trip = new Trip
             {
-                Name=name,
+                CartId = cartId,
+                Name =name,
                 Type = (TripType)Enum.Parse(typeof(TripType),type,true),
                 GroupSize = groupSize,
                 StartDate = date1,
                 EndDate = date2,
                 Price = thePrice,
+               
             };
 
-            return trip.Id;
+            this.db.Trips.Add(trip);
+            this.db.SaveChanges();
+
+            return trip.TripId;
         }
+
+        public Trip GetTripById(string id)
+        {
+            var tripId = this.db.Trips.Find(id);
+
+            return tripId;
+        }
+
+        
+        
 
 
     }

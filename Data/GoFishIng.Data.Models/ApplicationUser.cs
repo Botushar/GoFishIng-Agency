@@ -16,6 +16,7 @@ namespace GoFishIng.Data.Models
             this.Roles = new HashSet<IdentityUserRole<string>>();
             this.Claims = new HashSet<IdentityUserClaim<string>>();
             this.Logins = new HashSet<IdentityUserLogin<string>>();
+            this.UserTrips = new HashSet<TripUser>();
         }
 
         // Audit info
@@ -28,17 +29,13 @@ namespace GoFishIng.Data.Models
 
         public DateTime? DeletedOn { get; set; }
 
-        public string OrderId { get; set; }
+        public ICollection<Cart> Carts { get; set; }
 
-        public Order Order { get; set; }
+        public ICollection<Order> Orders { get; set; }
 
-        public string CartId { get; set; }
+        public ICollection<Permit> Permits { get; set; }
 
-        public Cart Cart { get; set; }
-
-        public string PermitId { get; set; }
-
-        public Permit Permit { get; set; }
+        public ICollection<TripUser> UserTrips { get; set; }
 
         public virtual ICollection<IdentityUserRole<string>> Roles { get; set; }
 

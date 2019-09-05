@@ -88,6 +88,7 @@
                 });
 
             services.AddSingleton(this.configuration);
+            services.AddHttpContextAccessor();
 
             // Identity stores
             services.AddTransient<IUserStore<ApplicationUser>, ApplicationUserStore>();
@@ -107,6 +108,7 @@
             services.AddTransient<IPermitsService, PermitsService>();
             services.AddTransient<ICartsService, CartsService>();
             services.AddTransient<IOrdersService, OrdersService>();
+            services.AddTransient<IApplicationUsersService, ApplicationUsersService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

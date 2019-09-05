@@ -8,7 +8,6 @@
 
     using GoFishIng.Data.Common.Models;
     using GoFishIng.Data.Models;
-
     using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
     using Microsoft.EntityFrameworkCore;
 
@@ -107,44 +106,54 @@
                 .IsRequired()
                 .OnDelete(DeleteBehavior.Restrict);
 
-            builder.Entity<ApplicationUser>().HasOne(u => u.Cart)
-                .WithOne(c => c.User).HasForeignKey<Cart>(ca => ca.UserId)
+
+            builder.Entity<TripUser>()
+                .HasKey(x => new { x.TripId, x.UserId });
+
+            builder.Entity<TripUser>()
+            .HasOne(t => t.Trip)
+            .WithMany(tu => tu.TripUsers)
+            .HasForeignKey(t => t.TripId);
+
+            builder.Entity<TripUser>()
+                .HasOne(u => u.User)
+                .WithMany(t => t.UserTrips)
+                .HasForeignKey(u => u.UserId);
+
+            builder.Entity<Cart>().HasMany(x => x.Trips)
+                .WithOne(x => x.Cart).HasForeignKey(x => x.CartId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            builder.Entity<Cart>().HasMany(x => x.Products)
+                .WithOne(x => x.Cart).HasForeignKey(x => x.CartId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            builder.Entity<ApplicationUser>().HasMany(c=>c.Carts)
+                .WithOne(c => c.User).HasForeignKey(ca => ca.UserId)
                 .OnDelete(DeleteBehavior.Cascade);
 
-            builder.Entity<Cart>().HasOne(c => c.User)
-                .WithOne(u => u.Cart).HasForeignKey<ApplicationUser>(u => u.CartId)
+            builder.Entity<ApplicationUser>().HasMany(o => o.Orders)
+                .WithOne(c => c.User).HasForeignKey(or => or.UserId)
                 .OnDelete(DeleteBehavior.Cascade);
 
-            builder.Entity<Permit>().HasOne(p => p.Cart)
-                .WithOne(c => c.Permit).HasForeignKey<Cart>(ca => ca.PermitId)
+            builder.Entity<ApplicationUser>().HasMany(p => p.Permits)
+                .WithOne(c => c.User).HasForeignKey(pe => pe.UserId)
                 .OnDelete(DeleteBehavior.Cascade);
 
-            builder.Entity<Cart>().HasOne(c => c.Permit)
-                .WithOne(p => p.Cart).HasForeignKey<Permit>(p => p.CartId)
+            builder.Entity<Cart>().HasMany(p=>p.Permits)
+                .WithOne(p => p.Cart).HasForeignKey(pe => pe.CartId)
                 .OnDelete(DeleteBehavior.Cascade);
 
-            builder.Entity<ApplicationUser>().HasOne(u => u.Order)
-                .WithOne(o => o.User).HasForeignKey<Order>(or => or.UserId)
+            builder.Entity<Order>().HasMany(p => p.Permits)
+                .WithOne(p => p.Order).HasForeignKey(pe => pe.OrderId)
                 .OnDelete(DeleteBehavior.Cascade);
 
-            builder.Entity<Order>().HasOne(o => o.User)
-                .WithOne(u => u.Order).HasForeignKey<ApplicationUser>(us => us.OrderId)
+            builder.Entity<Cart>().HasOne(o => o.Order)
+                .WithOne(c => c.Cart).HasForeignKey<Order>(or => or.CartId)
                 .OnDelete(DeleteBehavior.Cascade);
 
-            builder.Entity<ApplicationUser>().HasOne(u => u.Permit)
-                .WithOne(p => p.User).HasForeignKey<Permit>(pe => pe.UserId)
-                .OnDelete(DeleteBehavior.Cascade);
-
-            builder.Entity<Permit>().HasOne(p => p.User)
-                .WithOne(u => u.Permit).HasForeignKey<ApplicationUser>(us => us.PermitId)
-                .OnDelete(DeleteBehavior.Cascade);
-
-            builder.Entity<Permit>().HasOne(p => p.Order)
-                .WithOne(o => o.Permit).HasForeignKey<Order>(or => or.PermitId)
-                .OnDelete(DeleteBehavior.Cascade);
-
-            builder.Entity<Order>().HasOne(o => o.Permit)
-                .WithOne(p => p.Order).HasForeignKey<Permit>(pe => pe.OrderId)
+            builder.Entity<Order>().HasOne(c => c.Cart)
+                .WithOne(o => o.Order).HasForeignKey<Cart>(ca => ca.OrderId)
                 .OnDelete(DeleteBehavior.Cascade);
         }
 

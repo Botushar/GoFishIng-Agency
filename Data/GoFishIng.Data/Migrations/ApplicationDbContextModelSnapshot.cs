@@ -60,8 +60,6 @@ namespace GoFishIng.Data.Migrations
 
                     b.Property<int>("AccessFailedCount");
 
-                    b.Property<string>("CartId");
-
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken();
 
@@ -88,11 +86,7 @@ namespace GoFishIng.Data.Migrations
                     b.Property<string>("NormalizedUserName")
                         .HasMaxLength(256);
 
-                    b.Property<string>("OrderId");
-
                     b.Property<string>("PasswordHash");
-
-                    b.Property<string>("PermitId");
 
                     b.Property<string>("PhoneNumber");
 
@@ -100,18 +94,12 @@ namespace GoFishIng.Data.Migrations
 
                     b.Property<string>("SecurityStamp");
 
-                    b.Property<string>("TripId");
-
                     b.Property<bool>("TwoFactorEnabled");
 
                     b.Property<string>("UserName")
                         .HasMaxLength(256);
 
                     b.HasKey("Id");
-
-                    b.HasIndex("CartId")
-                        .IsUnique()
-                        .HasFilter("[CartId] IS NOT NULL");
 
                     b.HasIndex("IsDeleted");
 
@@ -123,16 +111,6 @@ namespace GoFishIng.Data.Migrations
                         .HasName("UserNameIndex")
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
 
-                    b.HasIndex("OrderId")
-                        .IsUnique()
-                        .HasFilter("[OrderId] IS NOT NULL");
-
-                    b.HasIndex("PermitId")
-                        .IsUnique()
-                        .HasFilter("[PermitId] IS NOT NULL");
-
-                    b.HasIndex("TripId");
-
                     b.ToTable("AspNetUsers");
                 });
 
@@ -141,11 +119,17 @@ namespace GoFishIng.Data.Migrations
                     b.Property<string>("Id")
                         .ValueGeneratedOnAdd();
 
-                    b.Property<string>("PermitId");
+                    b.Property<string>("OrderId");
 
                     b.Property<string>("UserId");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("OrderId")
+                        .IsUnique()
+                        .HasFilter("[OrderId] IS NOT NULL");
+
+                    b.HasIndex("UserId");
 
                     b.ToTable("Carts");
                 });
@@ -155,13 +139,15 @@ namespace GoFishIng.Data.Migrations
                     b.Property<string>("Id")
                         .ValueGeneratedOnAdd();
 
-                    b.Property<DateTime>("IssuedOn");
+                    b.Property<string>("CartId");
 
-                    b.Property<string>("PermitId");
+                    b.Property<DateTime>("IssuedOn");
 
                     b.Property<string>("UserId");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("UserId");
 
                     b.ToTable("Orders");
                 });
@@ -193,13 +179,11 @@ namespace GoFishIng.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CartId")
-                        .IsUnique()
-                        .HasFilter("[CartId] IS NOT NULL");
+                    b.HasIndex("CartId");
 
-                    b.HasIndex("OrderId")
-                        .IsUnique()
-                        .HasFilter("[OrderId] IS NOT NULL");
+                    b.HasIndex("OrderId");
+
+                    b.HasIndex("UserId");
 
                     b.ToTable("Permits");
                 });
@@ -257,7 +241,7 @@ namespace GoFishIng.Data.Migrations
 
             modelBuilder.Entity("GoFishIng.Data.Models.Trip", b =>
                 {
-                    b.Property<string>("Id")
+                    b.Property<string>("TripId")
                         .ValueGeneratedOnAdd();
 
                     b.Property<string>("CartId");
@@ -276,13 +260,26 @@ namespace GoFishIng.Data.Migrations
 
                     b.Property<int>("Type");
 
-                    b.HasKey("Id");
+                    b.HasKey("TripId");
 
                     b.HasIndex("CartId");
 
                     b.HasIndex("OrderId");
 
                     b.ToTable("Trips");
+                });
+
+            modelBuilder.Entity("GoFishIng.Data.Models.TripUser", b =>
+                {
+                    b.Property<string>("TripId");
+
+                    b.Property<string>("UserId");
+
+                    b.HasKey("TripId", "UserId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("TripUser");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -371,38 +368,42 @@ namespace GoFishIng.Data.Migrations
                     b.ToTable("AspNetUserTokens");
                 });
 
-            modelBuilder.Entity("GoFishIng.Data.Models.ApplicationUser", b =>
+            modelBuilder.Entity("GoFishIng.Data.Models.Cart", b =>
                 {
-                    b.HasOne("GoFishIng.Data.Models.Cart", "Cart")
-                        .WithOne("User")
-                        .HasForeignKey("GoFishIng.Data.Models.ApplicationUser", "CartId")
-                        .OnDelete(DeleteBehavior.Restrict);
-
                     b.HasOne("GoFishIng.Data.Models.Order", "Order")
-                        .WithOne("User")
-                        .HasForeignKey("GoFishIng.Data.Models.ApplicationUser", "OrderId")
+                        .WithOne("Cart")
+                        .HasForeignKey("GoFishIng.Data.Models.Cart", "OrderId")
                         .OnDelete(DeleteBehavior.Restrict);
 
-                    b.HasOne("GoFishIng.Data.Models.Permit", "Permit")
-                        .WithOne("User")
-                        .HasForeignKey("GoFishIng.Data.Models.ApplicationUser", "PermitId")
+                    b.HasOne("GoFishIng.Data.Models.ApplicationUser", "User")
+                        .WithMany("Carts")
+                        .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Restrict);
+                });
 
-                    b.HasOne("GoFishIng.Data.Models.Trip")
-                        .WithMany("Participants")
-                        .HasForeignKey("TripId");
+            modelBuilder.Entity("GoFishIng.Data.Models.Order", b =>
+                {
+                    b.HasOne("GoFishIng.Data.Models.ApplicationUser", "User")
+                        .WithMany("Orders")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Restrict);
                 });
 
             modelBuilder.Entity("GoFishIng.Data.Models.Permit", b =>
                 {
                     b.HasOne("GoFishIng.Data.Models.Cart", "Cart")
-                        .WithOne("Permit")
-                        .HasForeignKey("GoFishIng.Data.Models.Permit", "CartId")
+                        .WithMany("Permits")
+                        .HasForeignKey("CartId")
                         .OnDelete(DeleteBehavior.Restrict);
 
                     b.HasOne("GoFishIng.Data.Models.Order", "Order")
-                        .WithOne("Permit")
-                        .HasForeignKey("GoFishIng.Data.Models.Permit", "OrderId")
+                        .WithMany("Permits")
+                        .HasForeignKey("OrderId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("GoFishIng.Data.Models.ApplicationUser", "User")
+                        .WithMany("Permits")
+                        .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Restrict);
                 });
 
@@ -410,7 +411,8 @@ namespace GoFishIng.Data.Migrations
                 {
                     b.HasOne("GoFishIng.Data.Models.Cart", "Cart")
                         .WithMany("Products")
-                        .HasForeignKey("CartId");
+                        .HasForeignKey("CartId")
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.HasOne("GoFishIng.Data.Models.Order", "Order")
                         .WithMany("Products")
@@ -421,11 +423,25 @@ namespace GoFishIng.Data.Migrations
                 {
                     b.HasOne("GoFishIng.Data.Models.Cart", "Cart")
                         .WithMany("Trips")
-                        .HasForeignKey("CartId");
+                        .HasForeignKey("CartId")
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.HasOne("GoFishIng.Data.Models.Order", "Order")
                         .WithMany("Trips")
                         .HasForeignKey("OrderId");
+                });
+
+            modelBuilder.Entity("GoFishIng.Data.Models.TripUser", b =>
+                {
+                    b.HasOne("GoFishIng.Data.Models.Trip", "Trip")
+                        .WithMany("TripUsers")
+                        .HasForeignKey("TripId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("GoFishIng.Data.Models.ApplicationUser", "User")
+                        .WithMany("UserTrips")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Restrict);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>

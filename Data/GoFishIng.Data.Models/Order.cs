@@ -17,16 +17,18 @@ namespace GoFishIng.Data.Models
 
         public DateTime IssuedOn { get; set; }
 
-        public string PermitId { get; set; }
-
-        public Permit Permit { get; set; }
-
         public string UserId { get; set; }
 
         public ApplicationUser User { get; set; }
 
+        public string CartId { get; set; }
+
+        public Cart Cart { get; set; }
+
         public ICollection<Product> Products { get; set; }
 
         public ICollection<Trip> Trips { get; set; }
+
+        public ICollection<Permit> Permits { get; set; }
     }
 }

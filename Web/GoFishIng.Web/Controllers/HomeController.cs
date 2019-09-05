@@ -1,11 +1,19 @@
 ﻿namespace GoFishIng.Web.Controllers
 {
+    using GoFishIng.Services;
     using Microsoft.AspNetCore.Mvc;
 
     public class HomeController : BaseController
     {
+        private readonly ICartsService cartsServices;
+
+        public HomeController(ICartsService cartsServices)
+        {
+            this.cartsServices = cartsServices;
+        }
         public IActionResult Index()
         {
+           
             return this.View();
         }
 

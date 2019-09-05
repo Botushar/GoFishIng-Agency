@@ -13,6 +13,8 @@ namespace GoFishIng.Data.Models
 
         public decimal Price { get; set; }
 
+        public int Quantity { get; set; }
+
         public bool InStock { get; set; }
 
         public ProductType Type { get; set; }
